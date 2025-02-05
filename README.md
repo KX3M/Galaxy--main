@@ -1,57 +1,159 @@
-### <h1>ADVANCE FILE SHARING BOT V3 🤖</h1>
-<img src="https://telegra.ph/file/ff8fbe7d67a3c7492c353.jpg">
-<blockquote><b>THIS IS AN ADVANCE FILE SHARING BOT WITH REQUEST FORCE-FSUB, MADE BY ➪ <a href="https://t.me/Shidoteshika1">King 王</a><br> HERE ONLY THE HIGHLIGHTTED FEATURES ARE MENTIONED BELOW ;</b></blockquote>
+# File-sharing-Bot
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+<p align="center">
+  <a href="https://www.python.org">
+    <img src="http://ForTheBadge.com/images/badges/made-with-python.svg" width ="250">
+  </a>
+  <a href="https://t.me/CodeXBotz">
+    <img src="https://github.com/CodeXBotz/PyrogramGenStr/blob/main/resources/madebycodex-badge.svg" width="250">
+  </a><br>
+  <a href="https://t.me/CodeXBotz">
+    &nbsp;<img src="https://img.shields.io/badge/Code%20%F0%9D%95%8F%20Botz-Channel-blue?style=flat-square&logo=telegram" width="130" height="18">&nbsp;
+  </a>
+  <a href="https://t.me/codexbotzsupport">
+    &nbsp;<img src="https://img.shields.io/badge/Code%20%F0%9D%95%8F%20Botz-Group-blue?style=flat-square&logo=telegram" width="130" height="18">&nbsp;
+  </a>
+  <br>
+  <a href="https://github.com/CodeXBotz/File-Sharing-Bot/stargazers">
+    <img src="https://img.shields.io/github/stars/CodeXBotz/File-Sharing-Bot?style=social">
+  </a>
+  <a href="https://github.com/CodeXBotz/File-Sharing-Bot/fork">
+    <img src="https://img.shields.io/github/forks/CodeXBotz/File-Sharing-Bot?label=Fork&style=social">
+  </a>  
+</p>
 
-### <h2> 🌟 BOT FEATURES 1.1: </h2>
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif"><br>
-### 1. FORCE-SUB 📢: 
-<i>You can add one or multiple force-sub channels—there's no limit to the number you can add. You can also empty the list by deleting all force-sub channels. This feature provides versatility, allowing you to create a custom number of force-sub channels according to your preference.</i>
 
-### 1.1. REQUEST FORCE-SUB 📢: 
-<i>The most demanding aspect is the Request Force-Sub feature. By enabling Request Force-Sub mode, users are provided with a private channel link along with a join request. This feature adds versatility, allowing for greater flexibility in managing Force-Sub channels based on individual preferences. Additionally, the Request Force-Sub settings offer interactive features that enable more advanced and reliable operations.</i>
+Telegram Bot to store Posts and Documents and it can Access by Special Links.
+I Guess This Will Be Usefull For Many People.....😇. 
 
-### 2. ADMINS 👮🏻‍♂️: 
-<i>You can add one or multiple admins by providing their user IDs, and you can also remove all admins if needed. Admins have access to some useful bot commands but do not have access to all commands.</i>
+##
 
-### 3. BAN 🚫: 
-<i>You can add user IDs to a banned list, preventing those who annoy you or spam the bot from using it. They will be unable to access the bot until you remove them from the banned list.</i>
+**If you need any more modes in repo or If you find out any bugs, mention in [@codexbotzsupport ](https://www.telegram.dog/codexbotzsupport)**
 
-### 4. AUTO-DELETE 🗑⏱: 
-<i>This feature is crucial for protecting the bot from copyright strikes and reducing the risk of being banned from Telegram. It includes two options: first, you can enable or disable the auto-delete mode; second, you can set a timer, so files will be automatically deleted after a specified period. After that it also send a message that shows the "previous message was deleted" and provide the link to retrieve again the same files.</i>
+**Make sure to see [contributing.md](https://github.com/CodeXBotz/File-Sharing-Bot/blob/main/CONTRIBUTING.md) for instructions on contributing to the project!**
 
-### 5. CONTENT BUTTON ⚪️: 
-<i>This feature allows you to add customizable buttons to files shared by the bot. Every file shared by the bot will have a button, which you can tailor to meet your specific needs.</i>
 
-### 6. SET BUTTON 🔘: 
-<i>This feature allows you to customize the content buttons on files shared by the bot. For example, you can set the button name and link. You could create a button labeled "Join Channel," which will appear on the files and contain a specific link provided by you.</i>
 
-### 7. HIDE CAPTION & PROTECT CONTENT 🫥🔒:
-<i>The "Hide Caption" feature allows you to remove the caption from shared files, while the "Protect Content" feature secures the files. If you enable "Protect Content," the files cannot be forwarded by users.</i>
+### Features
+- Fully customisable.
+- Customisable welcome & Forcesub messages.
+- More than one Posts in One Link.
+- Can be deployed on heroku directly.
 
-### 8. DATABASE 💾:
-<i>All the features mentioned above are stored permanently in the database, meaning the data will remain unchanged until you decide to modify it.</i>
+### Setup
 
-### <i>🚀 In addition to the above, more user-friendly and advanced interaction features have been added. It is upgraded version of previous bot features, So more interactive then previous.</i>
+- Add the bot to Database Channel with all permission
+- Add bot to ForceSub channel as Admin with Invite Users via Link Permission if you enabled ForceSub 
 
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
+##
+### Installation
+#### Deploy on Heroku
+**BEFORE YOU DEPLOY ON HEROKU, YOU SHOULD FORK THE REPO AND CHANGE ITS NAME TO ANYTHING ELSE**<br>
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)</br>
+<a href="https://youtu.be/LCrkRTMkmzE">
+  <img src="https://img.shields.io/badge/How%20to-Deploy-red?logo=youtube" width="147">
+</a><br>
+**Check This Tutorial Video on YouTube for any Help**<br>
+**Thanks to [Erich](https://t.me/ErichDaniken) and his [InFoTel](https://t.me/InFoTel_Group) for this Video**
 
-### <h2>⚠️ YOU SHOULD ADD BELOW COMMANDS ON YOUR BOT:</h2>
+#### Deploy on Railway
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/1jKLr4)
+
+#### Deploy on Koyeb
+
+The fastest way to deploy the application is to click the **Deploy to Koyeb** button below.
+
+
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/CodeXBotz/File-Sharing-Bot&branch=koyeb&name=filesharingbot)
+
+
+#### Deploy in your VPS
+````bash
+git clone https://github.com/CodeXBotz/File-Sharing-Bot
+cd File-Sharing-Bot
+pip3 install -r requirements.txt
+# <Create config.py appropriately>
+python3 main.py
+````
+
+### Admin Commands
+
 ```
-start - ⚡️ ᴄʜᴇᴄᴋ ᴀʟɪᴠᴇ/ᴅᴇᴀᴅ !
-help - ⚡️ ɪɴsᴛʀᴜᴄᴛɪᴏɴ ғᴏʀ ᴜsɪɴɢ ʙᴏᴛ
-users - 👀 ᴠɪᴇᴡ ᴜsᴇʀ sᴇᴛᴛɪɴɢ ᴄᴏᴍᴍᴀɴᴅs
-forcesub - 👀 ᴠɪᴇᴡ ғᴏʀᴄᴇsᴜʙ ʀᴇʟᴀᴛᴇᴅ ᴄᴏᴍᴍᴀɴᴅs
-req_fsub - ⚙️ ᴠɪᴇᴡ ʀᴇǫᴜᴇsᴛ ғᴏʀᴄᴇsᴜʙ sᴇᴛᴛɪɴɢs
-files - ⚙️ ᴠɪᴇᴡ ᴍᴇssᴀɢᴇ/ғɪʟᴇs ʀᴇʟᴀᴛᴇᴅ sᴇᴛᴛɪɴɢs
-auto_del - ⚙️ ᴠɪᴇᴡ ᴀᴜᴛᴏ ᴅᴇʟᴇᴛᴇ sᴇᴛᴛɪɴɢs 
-cmd - ⚠️ ᴠɪᴇᴡ ʙᴀsɪᴄ ʙᴏᴛ ᴄᴏᴍᴍᴀɴᴅs (ᴀᴅᴍɪɴs)
-restart - ⚠️ ғᴏʀᴄᴇғᴜʟʟʏ ʀᴇsᴛᴀʀᴛ ᴛʜᴇ ʙᴏᴛ (ᴏᴡɴᴇʀ)
+/start - start the bot or get posts
+
+/batch - create link for more than one posts
+
+/genlink - create link for one post
+
+/users - view bot statistics
+
+/broadcast - broadcast any messages to bot users
+
+/stats - checking your bot uptime
 ```
-<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-<h2>🧑‍💻 DEVELOPER : <a href="https://t.me/Shidoteshika1">Shidoteshika (King 王)</a></h2>
+### Variables
+
+* `API_HASH` Your API Hash from my.telegram.org
+* `APP_ID` Your API ID from my.telegram.org
+* `TG_BOT_TOKEN` Your bot token from @BotFather
+* `OWNER_ID` Must enter Your Telegram Id
+* `CHANNEL_ID` Your Channel ID eg:- -100xxxxxxxx
+* `DATABASE_URL` Your mongo db url
+* `DATABASE_NAME` Your mongo db session name
+* `ADMINS` Optional: A space separated list of user_ids of Admins, they can only create links
+* `START_MESSAGE` Optional: start message of bot, use HTML and <a href='https://github.com/codexbotz/File-Sharing-Bot/blob/main/README.md#start_message'>fillings</a>
+* `FORCE_SUB_MESSAGE`Optional:Force sub message of bot, use HTML and Fillings
+* `FORCE_SUB_CHANNEL` Optional: ForceSub Channel ID, leave 0 if you want disable force sub
+* `PROTECT_CONTENT` Optional: True if you need to prevent files from forwarding
+
+### Extra Variables
+
+* `CUSTOM_CAPTION` put your Custom caption text if you want Setup Custom Caption, you can use HTML and <a href='https://github.com/CodeXBotz/File-Sharing-Bot/blob/main/README.md#custom_caption'>fillings</a> for formatting (only for documents)
+* `DISABLE_CHANNEL_BUTTON` Put True to Disable Channel Share Button, Default if False
+* `BOT_STATS_TEXT` put your custom text for stats command, use HTML and <a href='https://github.com/codexbotz/File-Sharing-Bot/blob/main/README.md#custom_stats'>fillings</a>
+* `USER_REPLY_TEXT` put your text to show when user sends any message, use HTML
 
 
+### Fillings
+#### START_MESSAGE | FORCE_SUB_MESSAGE
+
+* `{first}` - User first name
+* `{last}` - User last name
+* `{id}` - User ID
+* `{mention}` - Mention the user
+* `{username}` - Username
+
+#### CUSTOM_CAPTION
+
+* `{filename}` - file name of the Document
+* `{previouscaption}` - Original Caption
+
+#### CUSTOM_STATS
+
+* `{uptime}` - Bot Uptime
+
+
+## Support   
+Join Our [Telegram Group](https://www.telegram.dog/codexbotzsupport) For Support/Assistance And Our [Channel](https://www.telegram.dog/codexbotz) For Updates.   
+   
+Report Bugs, Give Feature Requests There..   
+
+### Credits
+
+- Thanks To Dan For His Awsome [Libary](https://github.com/pyrogram/pyrogram)
+- Our Support Group Members
+
+### Licence
+[![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)  
+
+[FILE-SHARING-BOT](https://github.com/CodeXBotz/File-Sharing-Bot/) is Free Software: You can use, study share and improve it at your
+will. Specifically you can redistribute and/or modify it under the terms of the
+[GNU General Public License](https://www.gnu.org/licenses/gpl.html) as
+published by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version. 
+
+##
+
+   **Star this Repo if you Liked it ⭐⭐⭐**
 
