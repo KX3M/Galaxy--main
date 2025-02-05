@@ -1,48 +1,169 @@
-# +++ Made By King [telegram username: @Shidoteshika1] +++
+#(©)CodeXBotz
+
+
+
 
 import os
-import sys
-import random
 import asyncio
-import subprocess
+from pyrogram import Client, filters, __version__
+from pyrogram.enums import ParseMode
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.errors import FloodWait, UserIsBlocked, InputUserDeactivated
+
 from bot import Bot
-from database.database import kingdb
-from pyrogram import Client, filters
-from pyrogram.errors import FloodWait
-from plugins.FORMATS import START_MSG, FORCE_MSG
-from pyrogram.enums import ParseMode, ChatAction
-from config import CUSTOM_CAPTION, OWNER_ID, PICS
-from plugins.autoDelete import auto_del_notification, delete_message
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, InputMediaPhoto
-from helper_func import banUser, is_userJoin, is_admin, subscribed, encode, decode, get_messages
+from helper import b64_to_str,str_to_b64, get_current_time, shorten_url
+from config import ADMINS, FORCE_MSG, START_MSG, CUSTOM_CAPTION, DISABLE_CHANNEL_BUTTON, PROTECT_CONTENT
+from helper_func import subscribed, encode, decode, get_messages
+from database.database import *
 
 
-@Bot.on_message(filters.command('start') & filters.private & ~banUser & subscribed)
-async def start_command(client: Client, message: Message): 
-    await message.reply_chat_action(ChatAction.CHOOSE_STICKER)
-    id = message.from_user.id  
-    
-    if not await kingdb.present_user(id):
-        try: await kingdb.add_user(id)
-        except: pass
-                
-    text = message.text        
+async def _human_time_duration(seconds):
+    if seconds == 0:
+        return "inf"
+    parts = []
+    for unit, div in TIME_DURATION_UNITS:
+        amount, seconds = divmod(int(seconds), div)
+        if amount > 0:
+            parts.append(f'{amount} {unit}{"" if amount == 1 else "s"}')
+    return ", ".join(parts)
+
+@Bot.on_message(filters.command('start') & filters.private & subscribed)
+async def start_command(client: Bot, message: Message):
+    id = message.from_user.id
+    if not await present_user(id):
+        try:
+            await add_user(id)
+        except:
+            pass
+
+    if message.text.startswith("/start token_"):
+        user_id = message.from_user.id
+        try:
+            ad_msg = b64_to_str(message.text.split("/start token_")[1])
+            if int(user_id) != int(ad_msg.split(":")[0]):
+                await client.send_message(
+                    message.chat.id,
+                    "This Token Is Not For You \nor maybe you using 2 telegram apps if yes then uninstall this one...",
+                    reply_to_message_id=message.id,
+                )
+                return
+            if int(ad_msg.split(":")[1]) < get_current_time():
+                await client.send_message(
+                    message.chat.id,
+                    "Token Expired Regenerate A New Token",
+                    reply_to_message_id=message.id,
+                )
+                return
+            if int(ad_msg.split(":")[1]) > int(get_current_time() + 72000):
+                await client.send_message(
+                    message.chat.id,
+                    "Dont Try To Be Over Smart",
+                    reply_to_message_id=message.id,
+                )
+                return
+            query = {"user_id": user_id}
+            collection.update_one(
+                query, {"$set": {"time_out": int(ad_msg.split(":")[1])}}, upsert=True
+            )
+            await client.send_message(
+                message.chat.id,
+                "Congratulations! Ads token refreshed successfully! \n\nIt will expire after 24 Hour",
+                reply_to_message_id=message.id,
+            )
+            return
+        except BaseException:
+            await client.send_message(
+                message.chat.id,
+                "Invalid Token",
+                reply_to_message_id=message.id,
+            )
+            return
+
+    uid = message.from_user.id    
+    check = await present_premium(uid)
+    if uid not in ADMINS and not check: 
+        
+        result = collection.find_one({"user_id": uid})
+        if result is None:
+            temp_msg = await message.reply("Please wait...")
+            ad_code = str_to_b64(f"{uid}:{str(get_current_time() + 72000)}")
+            ad_url = shorten_url(f"https://telegram.dog/{client.username}?start=token_{ad_code}")
+            await client.send_message(
+                message.chat.id,
+                f"Hey🤴 <b>{message.from_user.mention}</b> \n\nYour Ads token is expired, refresh your token and try again. \n\n<b>Token Timeout:</b> 24 hour \n\n<b>What is token?</b> \nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hour after passing the ad.\n\n<b>APPLE/IPHONE USERS COPY TOKEN LINK AND OPEN IN CHROME BROWSER</b>",
+                disable_web_page_preview = True,
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "Click Here To Refresh Token",
+                                url=ad_url,
+                            )
+                        ],[
+                            InlineKeyboardButton(
+                                "How To Open Links? ", url='https://t.me/+_k4l-w75IrBiMzdl'                                                         
+                                
+                            )
+                            
+                        ],[
+                            InlineKeyboardButton(
+                                "Remove All Ads In One Click ", callback_data = "plan"                                                                
+                                
+                            )
+                        ]
+                    ]
+                ),
+                reply_to_message_id=message.id,
+            )
+            await temp_msg.delete()
+            return
+        elif int(result["time_out"]) < get_current_time():
+            temp_msg = await message.reply("Please wait...")
+            ad_code = str_to_b64(f"{uid}:{str(get_current_time() + 72000)}")
+            ad_url = shorten_url(f"https://telegram.dog/{client.username}?start=token_{ad_code}")
+            await client.send_message(
+                message.chat.id,
+                f"Hey <b>{message.from_user.mention}</b> \n\nYour Ads token is expired, refresh your token and try again. \n\n<b>Token Timeout:</b> 24 hour \n\n<b>What is token?</b> \nThis is an ads token. If you pass 1 ad, you can use the bot for 24 hour after passing the ad.",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(
+                                "Click Here To Refresh Token",
+                                url=ad_url,
+                            )
+                        ],[
+                            InlineKeyboardButton(
+                                "How To Open Links? ", url='https://t.me/+_k4l-w75IrBiMzdl'                                                         
+                                
+                            )
+                            
+                        ],[
+                            InlineKeyboardButton(
+                                " Remove All Ads In One Click ", callback_data = "plan"                                                                
+                                
+                            )
+                        ]
+                    ]
+                ),
+                reply_to_message_id=message.id,
+            )
+            await temp_msg.delete()
+            return
+
+    text = message.text
     if len(text)>7:
-        await message.delete()
-
-        try: base64_string = text.split(" ", 1)[1]
-        except: return
-                
+        try:
+            base64_string = text.split(" ", 1)[1]
+        except:
+            return
         string = await decode(base64_string)
         argument = string.split("-")
-        
         if len(argument) == 3:
             try:
                 start = int(int(argument[1]) / abs(client.db_channel.id))
                 end = int(int(argument[2]) / abs(client.db_channel.id))
             except:
                 return
-                    
             if start <= end:
                 ids = range(start,end+1)
             else:
@@ -53,65 +174,52 @@ async def start_command(client: Client, message: Message):
                     i -= 1
                     if i < end:
                         break
-                            
         elif len(argument) == 2:
-            try: ids = [int(int(argument[1]) / abs(client.db_channel.id))]
-            except: return
-                    
-        last_message = None
-        await message.reply_chat_action(ChatAction.UPLOAD_DOCUMENT)  
-        
-        try: messages = await get_messages(client, ids)
-        except: return await message.reply("<b><i>Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ..!</i></b>")
-            
-        AUTO_DEL, DEL_TIMER, HIDE_CAPTION, CHNL_BTN, PROTECT_MODE = await asyncio.gather(kingdb.get_auto_delete(), kingdb.get_del_timer(), kingdb.get_hide_caption(), kingdb.get_channel_button(), kingdb.get_protect_content())   
-        if CHNL_BTN: button_name, button_link = await kingdb.get_channel_button_link()
-            
-        for idx, msg in enumerate(messages):
+            try:
+                ids = [int(int(argument[1]) / abs(client.db_channel.id))]
+            except:
+                return
+        temp_msg = await message.reply("Please wait...")
+        try:
+            messages = await get_messages(client, ids)
+        except:
+            await message.reply_text("Something went wrong..!")
+            return
+        await temp_msg.delete()
+
+        for msg in messages:
+
             if bool(CUSTOM_CAPTION) & bool(msg.document):
                 caption = CUSTOM_CAPTION.format(previouscaption = "" if not msg.caption else msg.caption.html, filename = msg.document.file_name)
-
-            elif HIDE_CAPTION and (msg.document or msg.audio):
-                caption = ""
-
             else:
                 caption = "" if not msg.caption else msg.caption.html
 
-            if CHNL_BTN:
-                reply_markup = InlineKeyboardMarkup([[InlineKeyboardButton(text=button_name, url=button_link)]]) if msg.document or msg.photo or msg.video or msg.audio else None
+            if DISABLE_CHANNEL_BUTTON:
+                reply_markup = msg.reply_markup
             else:
-                reply_markup = msg.reply_markup   
-                    
+                reply_markup = None
+
             try:
-                copied_msg = await msg.copy(chat_id=id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_MODE)
-                await asyncio.sleep(0.1)
-
-                if AUTO_DEL:
-                    asyncio.create_task(delete_message(copied_msg, DEL_TIMER))
-                    if idx == len(messages) - 1: last_message = copied_msg
-
+                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+                await asyncio.sleep(0.5)
             except FloodWait as e:
                 await asyncio.sleep(e.x)
-                copied_msg = await msg.copy(chat_id=id, caption=caption, parse_mode=ParseMode.HTML, reply_markup=reply_markup, protect_content=PROTECT_MODE)
-                await asyncio.sleep(0.1)
-                
-                if AUTO_DEL:
-                    asyncio.create_task(delete_message(copied_msg, DEL_TIMER))
-                    if idx == len(messages) - 1: last_message = copied_msg
-                        
-        if AUTO_DEL and last_message:
-                asyncio.create_task(auto_del_notification(client.username, last_message, DEL_TIMER, message.command[1]))
-                        
-    else:   
-        reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("• ғᴏʀ ᴍᴏʀᴇ •", url='https://t.me/anime_sub_society')],
-                    [InlineKeyboardButton("• ᴀʙᴏᴜᴛ", callback_data='about'),
-                     InlineKeyboardButton("ʜᴇʟᴘ •", url='https://t.me/ahss_help_zone')],
-                    [InlineKeyboardButton("• ᴏᴜʀ ᴄᴏᴍᴍᴜɴɪᴛʏ •", url='https://t.me/society_network')],
-                ])
-        await message.reply_photo(
-            photo = random.choice(PICS),
-            caption = START_MSG.format(
+                await msg.copy(chat_id=message.from_user.id, caption = caption, parse_mode = ParseMode.HTML, reply_markup = reply_markup, protect_content=PROTECT_CONTENT)
+            except:
+                pass
+        return
+    else:
+        reply_markup = InlineKeyboardMarkup(
+            [
+                [InlineKeybordButton("Main Channel",url="t.me/anime_raven")],
+                [
+                    InlineKeyboardButton("😊 About Me", callback_data = "about"),
+                    InlineKeyboardButton("🔒 Close", callback_data = "close")
+                ]
+            ]
+        )
+        await message.reply_text(
+            text = START_MSG.format(
                 first = message.from_user.first_name,
                 last = message.from_user.last_name,
                 username = None if not message.from_user.username else '@' + message.from_user.username,
@@ -119,114 +227,130 @@ async def start_command(client: Client, message: Message):
                 id = message.from_user.id
             ),
             reply_markup = reply_markup,
-	        message_effect_id=5104841245755180586 #🔥
+            disable_web_page_preview = True,
+            quote = True
         )
-        try: await message.delete()
-        except: pass
+        return
 
-   
-##===================================================================================================================##
-
-#TRIGGRED START MESSAGE FOR HANDLE FORCE SUB MESSAGE AND FORCE SUB CHANNEL IF A USER NOT JOINED A CHANNEL
-
-##===================================================================================================================##   
-
-
-# Create a global dictionary to store chat data
-chat_data_cache = {}
-
-@Bot.on_message(filters.command('start') & filters.private & ~banUser)
-async def not_joined(client: Client, message: Message):
-    temp = await message.reply(f"<b>??</b>")
     
-    user_id = message.from_user.id
-               
-    REQFSUB = await kingdb.get_request_forcesub()
-    buttons = []
-    count = 0
+#=====================================================================================##
 
+WAIT_MSG = """"<b>Processing ...</b>"""
+
+REPLY_ERROR = """<code>Use this command as a replay to any telegram message with out any spaces.</code>"""
+
+#=====================================================================================##
+
+    
+    
+@Bot.on_message(filters.command('start') & filters.private)
+async def not_joined(client: Client, message: Message):
+   buttons = [[
+            InlineKeyboardButton(
+                "Join 1",
+                url ="https://t.me/+9zWHreWb5aZhOTQ1"),
+             InlineKeyboardButton(
+                "Join 2",
+                url ="https://t.me/+MZi3cZma-clhM2Zl"),
+            InlineKeyboardButton(
+                "Join 3",
+                url = client.invitelink)
+        ]]
     try:
-        for total, chat_id in enumerate(await kingdb.get_all_channels(), start=1):
-            await message.reply_chat_action(ChatAction.PLAYING)
-            
-            # Show the join button of non-subscribed Channels.....
-            if not await is_userJoin(client, user_id, chat_id):
-                try:
-                    # Check if chat data is in cache
-                    if chat_id in chat_data_cache:
-                        data = chat_data_cache[chat_id]  # Get data from cache
-                    else:
-                        data = await client.get_chat(chat_id)  # Fetch from API
-                        chat_data_cache[chat_id] = data  # Store in cache
-                    
-                    cname = data.title
-                    
-                    # Handle private channels and links
-                    if REQFSUB and not data.username: 
-                        link = await kingdb.get_stored_reqLink(chat_id)
-                        await kingdb.add_reqChannel(chat_id)
-                        
-                        if not link:
-                            link = (await client.create_chat_invite_link(chat_id=chat_id, creates_join_request=True)).invite_link
-                            await kingdb.store_reqLink(chat_id, link)
-                    else:
-                        link = data.invite_link
-
-                    # Add button for the chat
-                    buttons.append([InlineKeyboardButton(text=cname, url=link)])
-                    count += 1
-                    await temp.edit(f"<b>{'! ' * count}</b>")
-                                                            
-                except Exception as e:
-                    print(f"Can't Export Channel Name and Link..., Please Check If the Bot is admin in the FORCE SUB CHANNELS:\nProvided Force sub Channel:- {chat_id}")
-                    return await temp.edit(f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @Shidoteshika1</i></b>\n<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>")
-
-        try:
-            buttons.append([InlineKeyboardButton(text='♻️ Tʀʏ Aɢᴀɪɴ', url=f"https://t.me/{client.username}?start={message.command[1]}")])
-        except IndexError:
-            pass
-
-        await message.reply_chat_action(ChatAction.CANCEL)
-        await temp.edit_media(
-            media=InputMediaPhoto(
-                random.choice(PICS),
-                caption=FORCE_MSG.format(
-                    first=message.from_user.first_name,
-                    last=message.from_user.last_name,
-                    username=None if not message.from_user.username else '@' + message.from_user.username,
-                    mention=message.from_user.mention,
-                    id=message.from_user.id,
-                    count=count,
-                    total=total
+        buttons.append(
+            [
+                InlineKeyboardButton(
+                    text = '• Now Click here •',
+                    url = f"https://t.me/{client.username}?start={message.command[1]}"
                 )
-            ),
-            reply_markup=InlineKeyboardMarkup(buttons),
+            ]
         )
-                
-        try: await message.delete()
-        except: pass
-                        
-    except Exception as e:
-        print(f"Unable to perform forcesub buttons reason : {e}")
-        return await temp.edit(f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @cosmic_awaken</i></b>\n<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>")
+    except IndexError:
+        pass
+
+    await message.reply(
+        text = FORCE_MSG.format(
+                first = message.from_user.first_name,
+                last = message.from_user.last_name,
+                username = None if not message.from_user.username else '@' + message.from_user.username,
+                mention = message.from_user.mention,
+                id = message.from_user.id
+            ),
+        reply_markup = InlineKeyboardMarkup(buttons),
+        quote = True,
+        disable_web_page_preview = True
+    )
+
+@Bot.on_message(filters.command('users') & filters.private & filters.user(ADMINS))
+async def get_users(client: Bot, message: Message):
+    msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
+    users = await full_userbase()
+    await msg.edit(f"{len(users)} users are using this bot")
+    
+@Bot.on_message(filters.command('pre') & filters.private & filters.user(ADMINS))
+async def add_users(client: Bot, message: Message):
+    user_id = int(message.command[1])
+    await addpremium_user(user_id) 
+    await message.reply_text("Premium access added to the user")
+    await client.send_message(
+        chat_id=user_id,
+        text=f"<b>ᴘʀᴇᴍɪᴜᴍ ᴀᴅᴅᴇᴅ ᴛᴏ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ᴇɴᴊᴏʏ😀\n</b>",
+    ) 
+                      
+@Bot.on_message(filters.command('rem') & filters.private & filters.user(ADMINS))
+async def del_users(client: Bot, message: Message):
+    user_id = int(message.command[1])
+    await delpremium_user(user_id)     
+    await message.reply_text("Premium access removed ")
+    await client.send_message(
+        chat_id=user_id,
+        text=f"<b>ᴘʀᴇᴍɪᴜᴍ ʀᴇᴍᴏᴠᴇᴅ ғʀᴏᴍ ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ🥺\n</b>",
+    )                  
+    
 
 
-#=====================================================================================##
-#......... RESTART COMMAND FOR RESTARTING BOT .......#
-#=====================================================================================##
+@Bot.on_message(filters.private & filters.command('broadcast') & filters.user(ADMINS))
+async def send_text(client: Bot, message: Message):
+    if message.reply_to_message:
+        query = await full_userbase()
+        broadcast_msg = message.reply_to_message
+        total = 0
+        successful = 0
+        blocked = 0
+        deleted = 0
+        unsuccessful = 0
+        
+        pls_wait = await message.reply("<i>Broadcasting Message.. This will Take Some Time</i>")
+        for chat_id in query:
+            try:
+                await broadcast_msg.copy(chat_id)
+                successful += 1
+            except FloodWait as e:
+                await asyncio.sleep(e.x)
+                await broadcast_msg.copy(chat_id)
+                successful += 1
+            except UserIsBlocked:
+                await del_user(chat_id)
+                blocked += 1
+            except InputUserDeactivated:
+                await del_user(chat_id)
+                deleted += 1
+            except:
+                unsuccessful += 1
+                pass
+            total += 1
+        
+        status = f"""<b><u>Broadcast Completed</u>
 
-@Bot.on_message(filters.command('restart') & filters.private & filters.user(OWNER_ID))
-async def restart_bot(client: Client, message: Message):
-    print("Restarting bot...")
-    msg = await message.reply(text=f"<b><i><blockquote>⚠️ {client.name} ɢᴏɪɴɢ ᴛᴏ Rᴇsᴛᴀʀᴛ...</blockquote></i></b>")
-    try:
-        await asyncio.sleep(6)  # Wait for 6 seconds before restarting
+Total Users: <code>{total}</code>
+Successful: <code>{successful}</code>
+Blocked Users: <code>{blocked}</code>
+Deleted Accounts: <code>{deleted}</code>
+Unsuccessful: <code>{unsuccessful}</code></b>"""
+        
+        return await pls_wait.edit(status)
+
+    else:
+        msg = await message.reply(REPLY_ERROR)
+        await asyncio.sleep(8)
         await msg.delete()
-        args = [sys.executable, "main.py"]  # Adjust this if your start file is named differently
-        os.execl(sys.executable, *args)
-    except Exception as e:
-        print(f"Error occured while Restarting the bot: {e}")
-        return await msg.edit_text(f"<b><i>! Eʀʀᴏʀ, Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ ᴛᴏ sᴏʟᴠᴇ ᴛʜᴇ ɪssᴜᴇs @cosmic_awaken</i></b>\n<blockquote expandable><b>Rᴇᴀsᴏɴ:</b> {e}</blockquote>")
-    # Optionally, you can add cleanup tasks here
-    #subprocess.Popen([sys.executable, "main.py"])  # Adjust this if your start file is named differently
-    #sys.exit()
